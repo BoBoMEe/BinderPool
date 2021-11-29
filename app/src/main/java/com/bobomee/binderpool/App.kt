@@ -7,10 +7,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        ServiceTools.init(
-            this,
-            pkg = { "com.bobomee.server" },
-            act = { "com.bobomee.server.service.MainService" })
+        ServiceTools.pckage { "com.bobomee.server" }
+            .activity({ "com.bobomee.server.activity.TranslucentActivity" })
+            .service({ "com.bobomee.server.service.MainService" }).init(this)
     }
 
 

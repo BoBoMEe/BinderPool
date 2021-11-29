@@ -13,17 +13,26 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val mBookManager by lazy {
-        ServiceTools.findService<IBookManager>(ServiceTag.BOOK)
-    }
+    private var mBookManager:IBookManager? = null
 
-    private val mMediaManager by lazy {
-        ServiceTools.findService<IMediaPlayerManager>(ServiceTag.MEDIA)
-    }
+    private var mMediaManager:IMediaPlayerManager?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        start.setOnClickListener {
+            ServiceTools.start()
+        }
+
+        bind.setOnClickListener {
+            ServiceTools.bind()
+        }
+
+        getBinder.setOnClickListener {
+            mBookManager = ServiceTools.findService<IBookManager>(ServiceTag.BOOK)
+            mMediaManager = ServiceTools.findService<IMediaPlayerManager>(ServiceTag.MEDIA)
+        }
 
         //测试跨进程服务通信
         addBook.setOnClickListener {

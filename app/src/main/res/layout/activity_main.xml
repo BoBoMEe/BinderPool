@@ -7,11 +7,33 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/start"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Start Service"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bind"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Bind Service"
+        app:layout_constraintTop_toBottomOf="@id/start" />
+
+    <Button
+        android:id="@+id/getBinder"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Get Binder"
+        app:layout_constraintTop_toBottomOf="@id/bind" />
+
+
+    <Button
         android:id="@+id/addBook"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="add Book"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/getBinder" />
 
     <Button
         android:id="@+id/getBooks"

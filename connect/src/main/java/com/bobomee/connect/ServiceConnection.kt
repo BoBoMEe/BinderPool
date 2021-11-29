@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.IBinder
 import android.os.IInterface
 import com.bobomee.server.IBinderPool
@@ -17,13 +18,41 @@ class ServiceConnection {
     private var mDestroyByUser = false
     private var mConnected = false
     private val mServiceMap by lazy { mutableMapOf<String, IInterface?>() }
+    private val mActivityIntent by lazy {
+        val activityIntent = Intent()
+        val intentPkg = ServiceTools.getIntentPkg()
+        val activityClz = ServiceTools.getActivityClz()
+        val componentName = ComponentName(intentPkg,activityClz)
+        activityIntent.component = componentName
+        val activityAct = ServiceTools.getActivityAct()
+        if (activityAct.isNotEmpty()) {
+            activityIntent.action = activityAct
+        }
+        activityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        activityIntent
+    }
+    private val mServiceIntent by lazy {
+        val intent = Intent()
+        val intentPkg = ServiceTools.getIntentPkg()
+        val serviceClz = ServiceTools.getServiceClz()
+        intent.component = ComponentName(intentPkg,serviceClz)
+        val serviceAct = ServiceTools.getServiceAct()
+        if (serviceAct.isNotEmpty()){
+            intent.action = serviceAct
+        }
+        intent
+    }
+
+    fun init(){
+        mContext = ServiceTools.getContext()
+    }
 
     private val mServiceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
             mConnected = false
             mServiceMap.clear()
-            if (!mDestroyByUser&& null != mContext) {
-                bindService(mContext!!)
+            if (!mDestroyByUser) {
+                bindService()
             }
         }
 
@@ -34,17 +63,26 @@ class ServiceConnection {
 
     }
 
-    fun bindService(context: Context) {
-        mContext = context.applicationContext
-        val intent = Intent(ServiceTools.getServiceAct())
-        intent.`package` = ServiceTools.getServicePkg()
-        mContext!!.bindService(intent, mServiceConnection, BIND_AUTO_CREATE)
+    fun startService(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                mContext?.startService(mServiceIntent)
+            } catch (e: Exception) {
+                mContext?.startActivity(mActivityIntent)
+            }
+        } else {
+            mContext?.startService(mServiceIntent)
+        }
+    }
+
+    fun bindService() {
+        mContext?.bindService(mServiceIntent, mServiceConnection, BIND_AUTO_CREATE)
     }
 
     fun unbindService() {
         mDestroyByUser = true
         mContext?.unbindService(mServiceConnection)
-        mContext = null
+        mBinderPool = null
     }
 
     fun findService(tag: String): IInterface? {
