@@ -72,4 +72,12 @@
         android:max="1000"
         app:layout_constraintTop_toBottomOf="@id/pause" />
 
+
+    <Button
+        android:id="@+id/rule"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="rule"
+        app:layout_constraintTop_toBottomOf="@id/progress" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

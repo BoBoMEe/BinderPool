@@ -10,6 +10,9 @@ import com.bobomee.server.callback.OnMediaProgressListener
 import com.bobomee.server.manager.IBookManager
 import com.bobomee.server.manager.IMediaPlayerManager
 import kotlinx.android.synthetic.main.activity_main.*
+import pattern.StrategyRouter
+import pattern.impl.AddRule
+import pattern.impl.DivRule
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,6 +65,14 @@ class MainActivity : AppCompatActivity() {
 
         pause.setOnClickListener {
             mMediaManager?.pause()
+        }
+
+        rule.setOnClickListener {
+            val add = AddRule(3,4,"/")
+            val div = DivRule(12,3,"/")
+            val strategyRouter = StrategyRouter()
+            strategyRouter.accept(add,div)
+            strategyRouter.handle()
         }
 
 
