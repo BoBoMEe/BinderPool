@@ -1,2 +1,2 @@
-include ':app', ':server',':connect'
+include ':app', ':server',':connect',":aop_plugin"
 rootProject.name='BinderPool'
